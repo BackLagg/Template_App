@@ -1,0 +1,53 @@
+// ===== НОВАЯ ЦВЕТОВАЯ ПАЛИТРА (из fabricbot-frontend1) =====
+
+// Основные цвета
+$color-bg: #ffffff;
+$color-surface: #fafbfc;
+$color-card: #ffffff;
+$color-border: #e6e8ec;
+
+// Текстовые цвета
+$color-text-primary: #111827;
+$color-text-secondary: #6b7280;
+
+// Брендовые цвета (зеленая палитра)
+$color-brand-50: #ecfdf5;
+$color-brand-100: #d1fae5;
+$color-brand-200: #a7f3d0;
+$color-brand-300: #6ee7b7;
+$color-brand-400: #34d399;
+$color-brand-500: #10b981; // основной
+$color-brand-600: #059669; // hover
+$color-brand-700: #047857; // active
+
+// Дополнительные цвета
+$color-focus: rgba(16, 185, 129, 0.35);
+$color-danger: #ef4444;
+
+// Радиусы и тени
+$radius: 12px;
+$shadow: 0 6px 18px rgba(17, 24, 39, 0.06);
+
+// Шрифты
+$font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+
+// ===== LEGACY ЦВЕТА (старые, для постепенного перехода) =====
+$color-background-title: #654DF9;
+$color-background-button: #7639FB;
+$color-background-victories: #2D2173;
+
+$color-gift-text: #E9F7FA;
+$color-gift-background: #00739F;
+
+$font-text: 'SF Pro Display';
+
+@font-face {
+  font-family: 'OpenSans';
+  src: url('../assets/fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'SF Pro Display';
+  src: url('../assets/fonts/SfProDis/SFPRODISPLAYREGULAR.OTF') format('opentype');
+}
+

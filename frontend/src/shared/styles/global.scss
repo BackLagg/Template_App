@@ -1,0 +1,99 @@
+@use './variables' as *;
+@use './fonts' as *;
+
+// Отключение эффекта синего выделения при нажатии на элементы
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+// Разрешаем выделение текста в полях ввода
+input,
+textarea {
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+// Скрытие скроллбара с сохранением функции скроллинга
+html {
+    background-color: $color-bg;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+
+    /* IE и Edge */
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+        /* Chrome/Safari/Webkit */
+    }
+}
+
+body {
+    background-color: $color-bg;
+    margin: 0;
+    padding: 0;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+
+    /* IE и Edge */
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+        /* Chrome/Safari/Webkit */
+    }
+}
+
+.main {
+    overflow: auto;
+    background-color: #FAFAFA;
+
+    // Скрытие скроллбара с сохранением функции скроллинга
+    overflow-y: auto;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+
+    /* IE и Edge */
+    &::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+        /* Chrome/Safari/Webkit */
+    }
+
+    .main-content {
+        background-color: #FAFAFA;
+        display: flex;
+        flex-direction: column;
+
+        // Скрытие скроллбара с сохранением функции скроллинга
+        overflow-y: auto;
+        scrollbar-width: none;
+        /* Firefox */
+        -ms-overflow-style: none;
+
+        /* IE и Edge */
+        &::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+            /* Chrome/Safari/Webkit */
+        }
+    }
+}
+
+// Скрытие маленьких уведомлений о подтверждении под номером кошелька
+// Начинаем с минимального - скрываем только маленькие бейджи внутри кнопки
+.wallet-connect button [class*="badge"] {
+    display: none !important;
+}
+

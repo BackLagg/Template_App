@@ -1,0 +1,92 @@
+@use '../../styles/variables' as *;
+
+.errorScreen {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, $color-brand-50 0%, $color-brand-100 50%, $color-brand-200 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: $font-primary;
+}
+
+.errorScreenContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100vh;
+  padding: 40vh 0 20vh 0;
+  box-sizing: border-box;
+}
+
+.errorScreenMainSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  max-width: 400px;
+}
+
+.errorScreenTitle {
+  font-family: $font-primary;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 39px;
+  text-align: center;
+  text-transform: uppercase;
+  color: $color-text-primary;
+  margin: 0 0 24px 0;
+}
+
+.errorScreenMessage {
+  font-family: $font-primary;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  color: rgba($color-text-secondary, 0.8);
+  margin: 0;
+  max-width: 300px;
+}
+
+.errorScreenActionSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.errorScreenActionBtn {
+  background: transparent;
+  border: 2px solid $color-text-primary;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-family: $font-primary;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  text-transform: uppercase;
+  color: $color-text-primary;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  min-width: 200px;
+
+  &:hover {
+    background: $color-text-primary;
+    color: $color-card;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+}
+

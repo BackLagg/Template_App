@@ -1,0 +1,11 @@
+@use '@shared/styles/variables' as *;
+
+.onboarding {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, $color-brand-50 0%, $color-brand-100 50%, $color-brand-200 100%);
+  overflow: hidden;
+  font-family: $font-text;
+}
+

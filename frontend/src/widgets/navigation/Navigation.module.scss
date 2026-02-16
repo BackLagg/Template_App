@@ -1,0 +1,86 @@
+@use '../../shared/styles/variables' as *;
+
+.bottomNavigation {
+  pointer-events: auto;
+  height: 70px;
+  display: flex;
+  padding: 0 8px;
+  margin: 0;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  gap: 6px;
+  box-sizing: border-box;
+  position: relative;
+  background-color: $color-bg;
+  border-top: 1px solid $color-border;
+  font-family: $font-primary;
+}
+
+.navButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  padding: 8px 12px;
+  border-radius: $radius;
+  min-width: 0;
+  flex: 1;
+}
+
+.navIconWrapper {
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  transition: all 0.2s ease;
+}
+
+.navIcon {
+  width: 22px;
+  height: 22px;
+  transition: all 0.2s ease;
+}
+
+.navLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-text-secondary;
+  transition: color 0.2s ease;
+  text-align: center;
+  line-height: 1;
+}
+
+// Активное состояние
+.navButton.active {
+  color: $color-brand-600;
+  background-color: $color-brand-50;
+
+  .navIcon {
+    filter: brightness(0) saturate(100%) invert(27%) sepia(96%) saturate(1234%) hue-rotate(142deg) brightness(91%) contrast(101%);
+  }
+
+  .navLabel {
+    color: $color-brand-600;
+  }
+}
+
+// Hover состояние
+.navButton:hover:not(.active) {
+  color: $color-brand-600;
+  background-color: $color-surface;
+
+  .navIcon {
+    filter: brightness(0) saturate(100%) invert(27%) sepia(96%) saturate(1234%) hue-rotate(142deg) brightness(91%) contrast(101%);
+  }
+
+  .navLabel {
+    color: $color-brand-600;
+  }
+}
+

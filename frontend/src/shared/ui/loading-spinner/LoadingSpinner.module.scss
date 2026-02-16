@@ -1,0 +1,79 @@
+@use '../../styles/variables' as *;
+
+.loadingSpinner {
+  display: inline-block;
+  position: relative;
+}
+
+.loadingSpinnerCircle {
+  border-radius: 50%;
+  border: 2px solid transparent;
+  animation: spin 1s linear infinite;
+}
+
+// Размеры
+.loadingSpinnerSm {
+  width: 16px;
+  height: 16px;
+
+  .loadingSpinnerCircle {
+    width: 16px;
+    height: 16px;
+    border-width: 2px;
+  }
+}
+
+.loadingSpinnerMd {
+  width: 32px;
+  height: 32px;
+
+  .loadingSpinnerCircle {
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+  }
+}
+
+.loadingSpinnerLg {
+  width: 48px;
+  height: 48px;
+
+  .loadingSpinnerCircle {
+    width: 48px;
+    height: 48px;
+    border-width: 4px;
+  }
+}
+
+// Цвета
+.loadingSpinnerPrimary {
+  .loadingSpinnerCircle {
+    border-top-color: $color-background-button;
+    border-right-color: $color-background-button;
+  }
+}
+
+.loadingSpinnerSecondary {
+  .loadingSpinnerCircle {
+    border-top-color: #6b7280;
+    border-right-color: #6b7280;
+  }
+}
+
+.loadingSpinnerWhite {
+  .loadingSpinnerCircle {
+    border-top-color: white;
+    border-right-color: white;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
