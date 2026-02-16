@@ -1,0 +1,90 @@
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info
+dist
+build
+*.egg
+.eggs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Virtual environments
+venv
+env
+ENV
+.venv
+.env
+.ENV
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*.sublime-*
+*.pyc
+*.pyo
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Логи
+*.log
+logs
+*.log.*
+
+# Временные файлы
+.tmp
+.temp
+tmp
+temp
+*.tmp
+
+# Кэш
+.cache
+.pytest_cache
+.mypy_cache
+.coverage
+htmlcov
+.tox
+
+# Системные файлы
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# README и документация
+README.md
+*.md
+docs
+
+# Environment файлы
+.env.local
+.env.development
+.env.test
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# pyenv
+.python-version
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+

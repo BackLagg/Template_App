@@ -1,0 +1,10 @@
+payments.json
+last_date.json
+final_data.json
+.env
+__pycache__/
+*.py[cod]
+*$py.class
+.idea/
+venv/
+uui.py
