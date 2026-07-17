@@ -20,7 +20,6 @@ declare module '*.module.scss' {
 // Типы для Vite env переменных
 interface ImportMetaEnv {
   readonly VITE_API_BASE_URL?: string;
-  readonly VITE_TONCONNECT_MANIFEST_URL?: string;
   readonly VITE_DOCS_URL?: string;
   readonly DEV?: boolean;
   readonly PROD?: boolean;

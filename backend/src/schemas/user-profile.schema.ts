@@ -18,11 +18,14 @@ export class UserProfile {
   })
   userId!: Types.ObjectId;
 
+  @Prop({ required: true, unique: true, index: true })
+  telegramID!: string;
+
   @Prop({ required: false })
   name!: string;
 
   @Prop({ required: false })
-  username!: string; // Добавляем поле для username
+  username!: string;
 
   @Prop({ default: true })
   isNew!: boolean;

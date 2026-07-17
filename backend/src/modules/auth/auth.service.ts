@@ -24,6 +24,20 @@ export class AuthService {
     private onboardingService: OnboardingService,
   ) {}
 
+  private resolveUserId(
+    user: UserDocument | UserFullData | null,
+    profile: UserProfileDocument | null,
+  ): string {
+    if (user) {
+      const docId = (user as UserDocument)._id;
+      if (docId) {
+        return docId.toString();
+      }
+      return (user as UserFullData).id ?? (user as UserFullData)._id ?? '';
+    }
+    return profile?.userId?.toString() ?? '';
+  }
+
   async buildAuthResponse(
     telegramUser: TelegramUserData,
     user: UserDocument | UserFullData | null,
@@ -42,31 +56,21 @@ export class AuthService {
       needsCacheInvalidation = true;
     }
 
-    if (needsCacheInvalidation && user) {
-      const userId =
-        (user as UserDocument)._id?.toString?.() ??
-        (user as UserFullData).id ??
-        (user as UserFullData)._id;
-      if (userId) {
-        await this.cacheService.invalidateByTags([
-          `user:${userId}`,
-          'new_users',
-          'recent_registrations',
-        ]);
-      }
+    const userId = this.resolveUserId(user, profile);
+
+    if (needsCacheInvalidation && userId) {
+      await this.cacheService.invalidateByTags([
+        `user:${userId}`,
+        'new_users',
+        'recent_registrations',
+      ]);
     }
 
-    const userId = user
-      ? ((user as UserDocument)._id?.toString?.() ??
-        (user as UserFullData).id ??
-        (user as UserFullData)._id ??
-        '')
-      : '';
     return {
       success: true,
       user: {
-        id: userId || telegramUser.id.toString(),
-        telegramId: telegramUser.id,
+        id: userId,
+        telegramId: Number(profile?.telegramID ?? telegramUser.id),
         username: profile?.username || '',
         name: profile?.name || '',
         role: superUser ? 'superuser' : 'user',
@@ -96,17 +100,13 @@ export class AuthService {
       user = await this.userService.findOrCreateUser(telegramUser);
     }
 
-    const userId = user
-      ? ((user as UserDocument)._id?.toString?.() ??
-        (user as UserFullData).id ??
-        (user as UserFullData)._id ??
-        '')
-      : '';
+    const userId = this.resolveUserId(user, profile);
+
     return {
       success: true,
       user: {
-        id: userId || telegramUser.id.toString(),
-        telegramId: telegramUser.id,
+        id: userId,
+        telegramId: Number(profile?.telegramID ?? telegramUser.id),
         username: profile?.username || '',
         name: profile?.name || '',
         role: superUser ? 'superuser' : 'user',
@@ -118,9 +118,14 @@ export class AuthService {
     };
   }
 
-  async updateLastLogin(telegramUser: TelegramUserData): Promise<void> {
-    const telegramID = telegramUser.id.toString();
-    await this.userService.updateLastLogin(telegramID);
+  async updateLastLogin(
+    user: UserDocument | UserFullData | null,
+    profile: UserProfileDocument | null,
+  ): Promise<void> {
+    const userId = this.resolveUserId(user, profile);
+    if (userId) {
+      await this.userService.updateLastLogin(userId);
+    }
   }
 
   async updateUserProfile(
@@ -135,19 +140,14 @@ export class AuthService {
     );
   }
 
-  /**
-   * Преобразует дату в ISO строку, обрабатывая случаи когда дата может быть строкой или объектом Date
-   */
   private formatDate(
     date: Date | string | number | undefined | unknown,
   ): string {
     try {
-      // Если значение отсутствует
       if (!date) {
         return new Date().toISOString();
       }
 
-      // Если это уже объект Date JavaScript
       if (date instanceof Date) {
         const result = isNaN(date.getTime())
           ? new Date().toISOString()
@@ -155,7 +155,6 @@ export class AuthService {
         return result;
       }
 
-      // Если это строка
       if (typeof date === 'string') {
         const parsed = new Date(date);
         const result = isNaN(parsed.getTime())
@@ -164,7 +163,6 @@ export class AuthService {
         return result;
       }
 
-      // Если это число (timestamp)
       if (typeof date === 'number') {
         const parsed = new Date(date);
         const result = isNaN(parsed.getTime())
@@ -173,8 +171,6 @@ export class AuthService {
         return result;
       }
 
-      // Если это объект, пытаемся преобразовать через new Date
-      // Это обработает случаи с MongoDB Date и другими объектами даты
       if (date && typeof date === 'object') {
         try {
           const d = date as { toISOString?: () => string };
@@ -198,7 +194,6 @@ export class AuthService {
         }
       }
 
-      // Если ничего не помогло, возвращаем текущую дату
       return new Date().toISOString();
     } catch {
       return new Date().toISOString();

@@ -18,19 +18,13 @@ start_router = Router(name="start_router")
 # Текст приветственного сообщения
 WELCOME_TEXT = """👋 Welcome to FABRICBOT!
 
-We're building a service that lets you launch your own referral system in just 60 seconds — directly inside Telegram — and accept crypto payments in TON. Simple, transparent, and built for real growth.
+We're building a service that lets you launch your own referral system in just 60 seconds — directly inside Telegram. Simple, transparent, and built for real growth.
 
 Here's what you get today:
 
 ⚡️ Instant referral system, no code required
 🤝 Fair and easy payouts for your partners
 📊 Clear statistics and tracking, right in the bot
-
-What's coming soon:
-
-💎 Direct crypto payments in TON
-🔗 P2P options so your clients can pay the way they want
-🚀 More tools to scale your sales and community
 
 We're not another short-lived "hack." FABRICBOT is built on trust, speed, and simplicity — a solid tool to grow your business in the new digital economy."""
 

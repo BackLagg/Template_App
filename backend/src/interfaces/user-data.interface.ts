@@ -4,7 +4,6 @@ import { SuperUserDocument } from '../schemas/superuser.schema';
 export interface UserFullData {
   _id: string;
   id?: string;
-  telegramID: string;
   isAccepted: boolean;
   createdAt: Date;
   lastLoginAt: Date | null;

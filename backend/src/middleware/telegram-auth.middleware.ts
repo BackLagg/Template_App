@@ -4,7 +4,10 @@ import { Model } from 'mongoose';
 import { Response, NextFunction } from 'express';
 import { ConfigType } from '@nestjs/config';
 import * as crypto from 'crypto';
-import { User, UserDocument } from '../schemas/user.schema';
+import {
+  UserProfile,
+  UserProfileDocument,
+} from '../schemas/user-profile.schema';
 import { AuthenticatedRequest } from '../interfaces/request.interface';
 import { UserFullData } from '../interfaces/user-data.interface';
 import appConfig from '../config/app.config';
@@ -25,7 +28,8 @@ export class TelegramAuthMiddleware implements NestMiddleware {
   constructor(
     @Inject(appConfig.KEY)
     private readonly appConfiguration: ConfigType<typeof appConfig>,
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(UserProfile.name)
+    private userProfileModel: Model<UserProfileDocument>,
     private readonly cacheService: CacheService,
   ) {}
 
@@ -39,45 +43,65 @@ export class TelegramAuthMiddleware implements NestMiddleware {
       return cached;
     }
 
-    const result = await this.userModel
+    const result = await this.userProfileModel
       .aggregate([
         { $match: { telegramID } },
         {
           $lookup: {
-            from: 'userprofiles',
-            localField: '_id',
-            foreignField: 'userId',
-            as: 'profiles',
+            from: 'users',
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'users',
           },
         },
         {
           $lookup: {
             from: 'superusers',
-            localField: '_id',
+            localField: 'userId',
             foreignField: 'userId',
             as: 'superUsers',
           },
         },
         {
+          $addFields: {
+            user: { $arrayElemAt: ['$users', 0] },
+            superUserDoc: { $arrayElemAt: ['$superUsers', 0] },
+          },
+        },
+        {
+          $match: {
+            user: { $ne: null },
+          },
+        },
+        {
           $project: {
-            _id: 1,
-            id: { $toString: '$_id' },
-            telegramID: 1,
-            isAccepted: 1,
-            createdAt: 1,
-            lastLoginAt: 1,
-            updatedAt: 1,
+            _id: { $toString: '$user._id' },
+            id: { $toString: '$user._id' },
+            isAccepted: '$user.isAccepted',
+            createdAt: '$user.createdAt',
+            lastLoginAt: '$user.lastLoginAt',
+            updatedAt: '$user.updatedAt',
             profile: {
-              $cond: {
-                if: { $gt: [{ $size: '$profiles' }, 0] },
-                then: { $arrayElemAt: ['$profiles', 0] },
-                else: null,
-              },
+              _id: { $toString: '$_id' },
+              userId: { $toString: '$userId' },
+              telegramID: '$telegramID',
+              name: '$name',
+              username: '$username',
+              isNew: '$isNew',
+              avatarPath: '$avatarPath',
+              createdAt: '$createdAt',
+              updatedAt: '$updatedAt',
             },
             superUser: {
               $cond: {
-                if: { $gt: [{ $size: '$superUsers' }, 0] },
-                then: { $arrayElemAt: ['$superUsers', 0] },
+                if: { $ne: ['$superUserDoc', null] },
+                then: {
+                  _id: { $toString: '$superUserDoc._id' },
+                  userId: { $toString: '$superUserDoc.userId' },
+                  isAccepted: '$superUserDoc.isAccepted',
+                  createdAt: '$superUserDoc.createdAt',
+                  updatedAt: '$superUserDoc.updatedAt',
+                },
                 else: null,
               },
             },
@@ -174,12 +198,7 @@ export class TelegramAuthMiddleware implements NestMiddleware {
 
   private generateCacheTags(userData: UserFullData): string[] {
     const tags: string[] = [];
-    const userId =
-      (userData as { id?: string; _id?: unknown }).id ??
-      String(
-        (userData as { _id?: { toString: () => string } })._id?.toString?.() ??
-          '',
-      );
+    const userId = userData.id ?? userData._id ?? '';
     if (userId) {
       tags.push(`user:${userId}`);
     }
@@ -274,22 +293,18 @@ export class TelegramAuthMiddleware implements NestMiddleware {
         return null;
       }
 
-      // Парсим вручную, так как URLSearchParams может неправильно обработать значения со специальными символами
       const data: Record<string, string> = {};
       const pairs = decodedInitData.split('&');
 
       for (const pair of pairs) {
-        // Находим первое '=' - это разделитель ключа и значения
         const equalIndex = pair.indexOf('=');
         if (equalIndex === -1) {
-          // Пропускаем пары без '='
           continue;
         }
 
         const key = pair.substring(0, equalIndex);
         const value = pair.substring(equalIndex + 1);
 
-        // Если ключ уже есть, это может быть ошибка парсинга, но берем последнее значение
         data[key] = value;
       }
 
@@ -341,7 +356,6 @@ export class TelegramAuthMiddleware implements NestMiddleware {
     next: NextFunction,
   ): Promise<void> {
     try {
-      // Проверяем источники initData
       const initDataFromBody = (req.body as { initData?: string })?.initData;
       const initDataFromHeader = req.headers['x-init-data'] as
         | string
@@ -377,9 +391,6 @@ export class TelegramAuthMiddleware implements NestMiddleware {
         return;
       }
 
-      // Проверка времени жизни initData (auth_date)
-      // Важно: initData не хранится на сервере, но проверка auth_date предотвращает
-      // использование старых, возможно перехваченных токенов
       if (userData.auth_date) {
         const authDate = parseInt(userData.auth_date, 10);
         if (!isNaN(authDate)) {

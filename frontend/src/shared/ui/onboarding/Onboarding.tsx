@@ -29,15 +29,6 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete }) => {
       image: 'lightning'
     },
     {
-      title: 'COMING\nSOON',
-      description: [
-        'Connect your TG wallet and pay in TON',
-        'Integrate the payment system with your services via API',
-        'Enable your clients to pay through P2P'
-      ],
-      image: 'coin'
-    },
-    {
       title: 'TELL US ABOUT\nYOURSELF',
       description: 'Help your profile become more recognizable\nby sharing your full name with us',
       image: 'card',

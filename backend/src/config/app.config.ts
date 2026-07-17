@@ -20,11 +20,6 @@ export default registerAs('app', () => {
     botToken: process.env.BOT_TOKEN,
     botUsername: process.env.BOT_USERNAME || 'fabricbotbot',
 
-    // Payment Service settings
-    paymentServiceUrl:
-      process.env.PAYMENT_SERVICE_URL || 'http://localhost:3001',
-    paymentApiKey: process.env.PAYMENT_API_KEY || '',
-
     // File Service settings
     fileServiceUrl: process.env.FILE_SERVICE_URL || 'http://localhost:3002',
     fileServiceApiKey: process.env.FILE_API_KEY || '',
@@ -34,9 +29,6 @@ export default registerAs('app', () => {
     // Секрет для подписи межсервисных запросов (HMAC-SHA256)
     interServiceSecret:
       process.env.INTER_SERVICE_SECRET || process.env.INTEGRATION_API_KEY || '',
-    // Секрет для подписи токенов платежных запросов (должен совпадать с TOKEN_SECRET в integration-api-service)
-    integrationTokenSecret:
-      process.env.INTEGRATION_TOKEN_SECRET || 'change-me-in-production',
 
     // Публичный URL для файлов (через nginx/домен)
     // Если не указан, используется относительный путь /files/...

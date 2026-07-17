@@ -11,17 +11,7 @@ import { SanitizerUtil } from '../utils/sanitizer.util';
 export class SuperUserGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
-    const url = request.url;
 
-    // Пропускаем callback endpoints от payment-service (они не требуют аутентификации)
-    if (
-      url.includes('/deposit/callback') ||
-      url.includes('/withdraw/callback')
-    ) {
-      return true;
-    }
-
-    // Проверяем что Telegram пользователь существует
     if (!request.telegramUser) {
       throw new ForbiddenException({
         message: 'Telegram user not found',
@@ -46,7 +36,14 @@ export class SuperUserGuard implements CanActivate {
     }
 
     // Проверяем соответствие Telegram ID и пользователя в БД
-    if (request.telegramUser.id.toString() !== request.user.telegramID) {
+    if (!request.profile) {
+      throw new ForbiddenException({
+        message: 'User profile not found in database',
+        errorCode: 'PROFILE_NOT_FOUND',
+      });
+    }
+
+    if (request.telegramUser.id.toString() !== request.profile.telegramID) {
       throw new ForbiddenException({
         message: 'Telegram ID mismatch',
         errorCode: 'TELEGRAM_ID_MISMATCH',

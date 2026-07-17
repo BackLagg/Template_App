@@ -1,15 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { User, UserDocument } from '../../../schemas/user.schema';
+import {
+  UserProfile,
+  UserProfileDocument,
+} from '../../../schemas/user-profile.schema';
 import { TelegramUserData } from '../../../middleware/telegram-auth.middleware';
-import { MongoErrorUtil } from '../../../utils/mongo-error.util';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name)
     private userModel: Model<UserDocument>,
+    @InjectModel(UserProfile.name)
+    private userProfileModel: Model<UserProfileDocument>,
   ) {}
 
   getUserDisplayName(telegramUser: TelegramUserData): string {
@@ -22,23 +27,16 @@ export class UserService {
     return 'Anonymous';
   }
 
-  async createBasicUser(
-    telegramUser: TelegramUserData,
+  async createBasicUser(): Promise<UserDocument | null> {
+    return this.userModel.create({
+      lastLoginAt: new Date(),
+    });
+  }
+
+  async findById(
+    userId: Types.ObjectId | string,
   ): Promise<UserDocument | null> {
-    const telegramID = telegramUser.id.toString();
-
-    try {
-      const basicUser = await this.userModel.create({
-        telegramID,
-        lastLoginAt: new Date(),
-      });
-
-      return basicUser;
-    } catch (error: unknown) {
-      return await MongoErrorUtil.handleDuplicateKeyError(error, () =>
-        this.userModel.findOne({ telegramID }).exec(),
-      );
-    }
+    return this.userModel.findById(userId).exec();
   }
 
   async findOrCreateUser(
@@ -46,29 +44,30 @@ export class UserService {
   ): Promise<UserDocument> {
     const telegramID = telegramUser.id.toString();
 
-    let user: UserDocument | null = await this.userModel
+    const profile = await this.userProfileModel
       .findOne({ telegramID })
       .exec();
 
-    if (!user) {
-      const createdUser = await this.createBasicUser(telegramUser);
-      if (!createdUser) {
-        throw new Error('Failed to create user');
+    if (profile) {
+      const existingUser = await this.findById(profile.userId);
+      if (existingUser) {
+        return existingUser;
       }
-      user = createdUser;
     }
 
-    return user;
+    const createdUser = await this.createBasicUser();
+    if (!createdUser) {
+      throw new Error('Failed to create user');
+    }
+
+    return createdUser;
   }
 
-  async updateLastLogin(telegramID: string): Promise<void> {
-    const user = await this.userModel.findOne({ telegramID });
-    if (user) {
-      await this.userModel.findOneAndUpdate(
-        { telegramID },
-        { lastLoginAt: new Date() },
-        { new: true },
-      );
-    }
+  async updateLastLogin(userId: string): Promise<void> {
+    await this.userModel.findByIdAndUpdate(
+      userId,
+      { lastLoginAt: new Date() },
+      { new: true },
+    );
   }
 }

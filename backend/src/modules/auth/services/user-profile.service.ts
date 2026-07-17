@@ -25,12 +25,14 @@ export class UserProfileService {
   ) {}
 
   async createBasicProfile(
-    userId: import('mongoose').Types.ObjectId,
+    userId: Types.ObjectId,
+    telegramID: string,
     telegramUser: TelegramUserData,
   ): Promise<UserProfileDocument | null> {
     try {
       const basicProfile = await this.userProfileModel.create({
         userId,
+        telegramID,
         name: this.userService.getUserDisplayName(telegramUser),
         username: telegramUser.username || null,
         isNew: true,
@@ -38,7 +40,7 @@ export class UserProfileService {
       return basicProfile;
     } catch (error: unknown) {
       return await MongoErrorUtil.handleDuplicateKeyError(error, () =>
-        this.userProfileModel.findOne({ userId }).exec(),
+        this.userProfileModel.findOne({ telegramID }).exec(),
       );
     }
   }
@@ -46,16 +48,21 @@ export class UserProfileService {
   async findOrCreateProfile(
     telegramUser: TelegramUserData,
   ): Promise<UserProfileDocument> {
-    const user = await this.userService.findOrCreateUser(telegramUser);
-    const userId = user._id;
+    const telegramID = telegramUser.id.toString();
 
     let profile: UserProfileDocument | null = await this.userProfileModel
-      .findOne({ userId })
+      .findOne({ telegramID })
       .exec();
 
     if (!profile) {
+      const user = await this.userService.createBasicUser();
+      if (!user) {
+        throw new Error('Failed to create user');
+      }
+
       const createdProfile = await this.createBasicProfile(
-        userId,
+        user._id,
+        telegramID,
         telegramUser,
       );
       if (!createdProfile) {
@@ -85,7 +92,6 @@ export class UserProfileService {
         return null;
       }
 
-      // Удаляем старую аватарку если есть
       if (
         currentProfile?.avatarPath &&
         currentProfile.avatarPath !== newAvatarPath
@@ -102,7 +108,6 @@ export class UserProfileService {
         });
       }
 
-      // Обновляем профиль с новой аватаркой
       if (newAvatarPath && currentProfile?.userId) {
         await this.updateProfile(currentProfile.userId, {
           avatarPath: newAvatarPath,
@@ -162,7 +167,7 @@ export class UserProfileService {
 
     if (Object.keys(updateData).length > 0) {
       await this.updateProfile(userId, updateData);
-      await this.cacheService.invalidateByTags([`user:${userId}`]);
+      await this.cacheService.invalidateByTags([`user:${userId.toString()}`]);
     }
   }
 }

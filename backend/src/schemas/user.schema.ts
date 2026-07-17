@@ -9,9 +9,6 @@ export type UserDocument = User &
 
 @Schema({ timestamps: true })
 export class User {
-  @Prop({ required: true, unique: true, index: true })
-  telegramID!: string;
-
   @Prop({ default: false })
   isAccepted!: boolean;
 
@@ -20,9 +17,6 @@ export class User {
 
   @Prop({ type: Date, default: Date.now })
   lastLoginAt!: Date;
-
-  @Prop({ required: false })
-  tonAddress?: string; // Адрес TON кошелька пользователя (сохраняется при пополнении/выводе)
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

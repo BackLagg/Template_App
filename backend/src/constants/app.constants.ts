@@ -43,14 +43,10 @@ export const AppConstants = {
   LIMITS: {
     PAGINATION: {
       DEFAULT: 10,
-      WALLET_TRANSACTIONS: 20,
       DISCOVERY_USERS: 10,
-      DONATION_HISTORY: 50,
       RECENT_VIEWS: 7,
     },
     AMOUNTS: {
-      MAX_DONATION: 1000,
-      MAX_WALLET_AMOUNT: 1000000,
       MAX_PRODUCT_PRICE: 1000000,
       MAX_PRODUCT_REWARD: 1000000,
       MAX_REFERRAL_EARNINGS: 1000000,
@@ -75,7 +71,6 @@ export const AppConstants = {
   PORTS: {
     BACKEND_DEFAULT: 8080,
     FRONTEND_DEFAULT: 3000,
-    PAYMENT_SERVICE_DEFAULT: 3001,
     MONGODB_DEFAULT: 27017,
     REDIS_DEFAULT: 6379,
     REDIS_DEV: 6381,
@@ -100,7 +95,6 @@ export const AppConstants = {
       REFERRAL_STATS_SECONDS: 5 * 60,
       HEALTH_CHECK_SECONDS: 5,
       USER_DATA_MINUTES: 15,
-      ICO_FUNDING_SECONDS: 5 * 60,
       CLEANUP_INTERVAL_MS: 5 * 60 * 1000,
     },
     TTL_BY_ACTIVITY: {
@@ -112,24 +106,6 @@ export const AppConstants = {
       INACTIVE_RECENT_HOURS: 5,
       INACTIVE_OLD_MINUTES: 15,
       DEFAULT_MINUTES: 2,
-    },
-  },
-
-  DONATION: {
-    LEVELS: {
-      NONE: 0,
-      LEVEL_1: 1,
-      LEVEL_2: 2,
-      LEVEL_3: 3,
-      LEVEL_4: 4,
-      LEVEL_5: 5,
-    },
-    THRESHOLDS: {
-      LEVEL_1_MIN: 10,
-      LEVEL_2_MIN: 50,
-      LEVEL_3_MIN: 100,
-      LEVEL_4_MIN: 1000,
-      LEVEL_5_MIN: 10000,
     },
   },
 
@@ -162,7 +138,6 @@ export const AppConstants = {
       AUTH_DURATION: [0.01, 0.05, 0.1, 0.5, 1, 2, 5],
       CACHE_DURATION: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1],
       CACHE_DURATION_EXTENDED: [0.001, 0.005, 0.01, 0.05, 0.1, 0.5, 1, 2, 5],
-      WALLET_DURATION: [0.01, 0.05, 0.1, 0.5, 1, 2, 5],
       DATABASE_DURATION: [0.01, 0.05, 0.1, 0.5, 1, 2, 5, 10],
     },
   },

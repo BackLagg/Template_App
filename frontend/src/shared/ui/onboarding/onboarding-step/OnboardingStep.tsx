@@ -3,7 +3,6 @@ import type { StepContent } from '../types';
 import styles from './OnboardingStep.module.scss';
 
 import lockImage from '@shared/assets/onboarding/lock.svg';
-import coinImage from '@shared/assets/onboarding/coin.svg';
 import lightningImage from '@shared/assets/onboarding/lightning.svg';
 import cardImage from '@shared/assets/onboarding/card.svg';
 
@@ -24,8 +23,6 @@ const getImageSource = (imageName: string): string => {
   switch (imageName) {
     case 'lock':
       return lockImage;
-    case 'coin':
-      return coinImage;
     case 'lightning':
       return lightningImage;
     case 'card':

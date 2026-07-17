@@ -17,7 +17,7 @@ export class OnboardingService {
     private userService: UserService,
     private userProfileService: UserProfileService,
     private cacheService: CacheService,
-  ) { }
+  ) {}
 
   async completeOnboarding(
     telegramUser: TelegramUserData,
@@ -63,16 +63,18 @@ export class OnboardingService {
       updateData.avatarPath = avatarPath;
     }
 
-    const userId = (user as UserDocument)._id ?? (user as UserFullData)._id;
+    const userId =
+      (user as UserDocument)._id?.toString() ??
+      (user as UserFullData).id ??
+      (user as UserFullData)._id ??
+      profile.userId.toString();
+
     if (Object.keys(updateData).length > 0 && userId) {
       profile = await this.userProfileService.updateProfile(userId, updateData);
     }
-    const userIdStr =
-      typeof userId === 'string'
-        ? userId
-        : ((userId as { toString: () => string }).toString?.() ?? '');
+
     await this.cacheService.invalidateByTags([
-      `user:${userIdStr}`,
+      `user:${userId}`,
       'onboarding_completed',
     ]);
 

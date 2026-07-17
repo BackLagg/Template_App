@@ -28,7 +28,7 @@ export class AuthController {
       throw new Error('Telegram user not found');
     }
     // Обновляем время последнего входа
-    await this.authService.updateLastLogin(req.telegramUser);
+    await this.authService.updateLastLogin(req.user || null, req.profile || null);
 
     return this.authService.buildAuthResponse(
       req.telegramUser,
@@ -54,7 +54,7 @@ export class AuthController {
     );
 
     // Обновляем время последнего входа ПОСЛЕ завершения онбординга
-    await this.authService.updateLastLogin(req.telegramUser!);
+    await this.authService.updateLastLogin(req.user || null, req.profile || null);
 
     return result;
   }

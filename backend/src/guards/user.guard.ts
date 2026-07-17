@@ -37,7 +37,14 @@ export class UserGuard implements CanActivate {
     }
 
     // Проверяем соответствие Telegram ID и пользователя в БД
-    if (request.telegramUser.id.toString() !== request.user.telegramID) {
+    if (!request.profile) {
+      throw new UnauthorizedException({
+        message: 'User profile not found in database',
+        errorCode: 'PROFILE_NOT_FOUND',
+      });
+    }
+
+    if (request.telegramUser.id.toString() !== request.profile.telegramID) {
       throw new UnauthorizedException({
         message: 'Telegram ID mismatch',
         errorCode: 'TELEGRAM_ID_MISMATCH',

@@ -5,8 +5,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { FileModule } from './modules/file/file.module';
 import { CacheModule } from './modules/cache/cache.module';
 import { TelegramAuthMiddleware } from './middleware/telegram-auth.middleware';
-import { User, UserSchema } from './schemas/user.schema';
-import { SuperUser, SuperUserSchema } from './schemas/superuser.schema';
 import { UserProfile, UserProfileSchema } from './schemas/user-profile.schema';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
@@ -32,8 +30,6 @@ import { RouteConstants } from './constants/routes.constants';
 
     // MongoDB Models for TelegramAuthMiddleware
     MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: SuperUser.name, schema: SuperUserSchema },
       { name: UserProfile.name, schema: UserProfileSchema },
     ]),
 
